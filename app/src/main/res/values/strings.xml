@@ -4,4 +4,7 @@
     <string name="notification_channel_name">SSH tunnel</string>
     <string name="notification_title">SSH tunnel active</string>
     <string name="notification_text">Foreground tunnel service is running</string>
+    <string name="action_connect">Connect</string>
+    <string name="action_disconnect">Disconnect</string>
+    <string name="action_add_profile">Добавить ещё профиль</string>
 </resources>

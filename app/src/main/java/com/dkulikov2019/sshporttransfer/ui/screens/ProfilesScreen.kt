@@ -3,6 +3,7 @@ package com.dkulikov2019.sshporttransfer.ui.screens
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -51,12 +52,47 @@ fun ProfilesScreen(
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
+                item {
+                    state.errorMessage?.let { message ->
+                        Text(
+                            text = message,
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+                    }
+                }
                 items(state.profiles, key = { it.id }) { profile ->
+                    val isActive = state.activeProfileId == profile.id
                     Card(modifier = Modifier.fillMaxWidth()) {
                         Column(modifier = Modifier.padding(16.dp)) {
                             Text(profile.name, style = MaterialTheme.typography.titleMedium)
                             Text(profile.sshHost, style = MaterialTheme.typography.bodyMedium)
+                            Text(
+                                text = "${profile.localHost}:${profile.localPort} → ${profile.remoteHost}:${profile.remotePort}",
+                                style = MaterialTheme.typography.bodySmall,
+                                modifier = Modifier.padding(top = 4.dp, bottom = 12.dp)
+                            )
+                            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                if (isActive) {
+                                    Button(onClick = viewModel::onDisconnectClicked) {
+                                        Text("Disconnect")
+                                    }
+                                } else {
+                                    Button(onClick = { viewModel.onConnectClicked(profile.id) }) {
+                                        Text("Connect")
+                                    }
+                                }
+                            }
                         }
+                    }
+                }
+                item {
+                    Button(
+                        onClick = onAddProfile,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Добавить ещё профиль")
                     }
                 }
             }

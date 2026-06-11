@@ -2,10 +2,11 @@ package com.dkulikov2019.sshporttransfer.data.ssh
 
 import com.dkulikov2019.sshporttransfer.domain.repository.KnownHostsRepository
 import java.security.MessageDigest
+import java.security.PublicKey
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.runBlocking
 import net.schmizz.sshj.transport.verification.HostKeyVerifier
-import java.security.PublicKey
 
 @Singleton
 class HostKeyVerifierImpl @Inject constructor(
@@ -16,11 +17,11 @@ class HostKeyVerifierImpl @Inject constructor(
         if (hostname == null || key == null) return false
         val fingerprint = key.encoded.sha256()
         return try {
-            val stored = kotlinx.coroutines.runBlocking {
+            val stored = runBlocking {
                 knownHostsRepository.getFingerprint(hostname, port)
             }
             if (stored == null) {
-                kotlinx.coroutines.runBlocking {
+                runBlocking {
                     knownHostsRepository.saveFingerprint(hostname, port, fingerprint)
                 }
                 true

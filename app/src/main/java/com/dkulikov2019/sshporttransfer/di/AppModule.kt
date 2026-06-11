@@ -56,12 +56,14 @@ abstract class AppModule {
 
         @Provides
         @Singleton
-        fun provideSshTunnelManager(): SshTunnelManager = SshTunnelManager()
-
-        @Provides
-        @Singleton
         fun provideHostKeyVerifier(
             knownHostsRepository: KnownHostsRepository
         ): HostKeyVerifierImpl = HostKeyVerifierImpl(knownHostsRepository)
+
+        @Provides
+        @Singleton
+        fun provideSshTunnelManager(
+            hostKeyVerifier: HostKeyVerifierImpl
+        ): SshTunnelManager = SshTunnelManager(hostKeyVerifier)
     }
 }

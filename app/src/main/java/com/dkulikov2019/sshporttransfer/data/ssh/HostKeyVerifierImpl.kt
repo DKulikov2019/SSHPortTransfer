@@ -1,20 +1,39 @@
 package com.dkulikov2019.sshporttransfer.data.ssh
 
 import com.dkulikov2019.sshporttransfer.domain.repository.KnownHostsRepository
+import java.security.MessageDigest
 import javax.inject.Inject
 import javax.inject.Singleton
+import net.schmizz.sshj.transport.verification.HostKeyVerifier
+import java.security.PublicKey
 
 @Singleton
 class HostKeyVerifierImpl @Inject constructor(
     private val knownHostsRepository: KnownHostsRepository
-) {
-    suspend fun verifyOrStore(host: String, port: Int, fingerprint: String): Boolean {
-        val existing = knownHostsRepository.getFingerprint(host, port)
-        return if (existing == null) {
-            knownHostsRepository.saveFingerprint(host, port, fingerprint)
-            true
-        } else {
-            existing == fingerprint
+) : HostKeyVerifier {
+
+    override fun verify(hostname: String?, port: Int, key: PublicKey?): Boolean {
+        if (hostname == null || key == null) return false
+        val fingerprint = key.encoded.sha256()
+        return try {
+            val stored = kotlinx.coroutines.runBlocking {
+                knownHostsRepository.getFingerprint(hostname, port)
+            }
+            if (stored == null) {
+                kotlinx.coroutines.runBlocking {
+                    knownHostsRepository.saveFingerprint(hostname, port, fingerprint)
+                }
+                true
+            } else {
+                stored == fingerprint
+            }
+        } catch (_: Throwable) {
+            false
         }
+    }
+
+    private fun ByteArray.sha256(): String {
+        val digest = MessageDigest.getInstance("SHA-256").digest(this)
+        return digest.joinToString("") { "%02x".format(it) }
     }
 }

@@ -9,6 +9,8 @@ import com.dkulikov2019.sshporttransfer.data.repository.KnownHostsRepositoryImpl
 import com.dkulikov2019.sshporttransfer.data.repository.ProfileRepositoryImpl
 import com.dkulikov2019.sshporttransfer.data.repository.SshTunnelRepositoryImpl
 import com.dkulikov2019.sshporttransfer.data.secure.EncryptedCredentialsStore
+import com.dkulikov2019.sshporttransfer.data.ssh.HostKeyVerifierImpl
+import com.dkulikov2019.sshporttransfer.data.ssh.SshTunnelManager
 import com.dkulikov2019.sshporttransfer.domain.repository.KnownHostsRepository
 import com.dkulikov2019.sshporttransfer.domain.repository.ProfileRepository
 import com.dkulikov2019.sshporttransfer.domain.repository.SecureCredentialsStore
@@ -51,5 +53,15 @@ abstract class AppModule {
 
         @Provides
         fun provideKnownHostDao(database: AppDatabase): KnownHostDao = database.knownHostDao()
+
+        @Provides
+        @Singleton
+        fun provideSshTunnelManager(): SshTunnelManager = SshTunnelManager()
+
+        @Provides
+        @Singleton
+        fun provideHostKeyVerifier(
+            knownHostsRepository: KnownHostsRepository
+        ): HostKeyVerifierImpl = HostKeyVerifierImpl(knownHostsRepository)
     }
 }

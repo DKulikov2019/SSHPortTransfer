@@ -1,0 +1,23 @@
+*.iml
+.gradle/
+local.properties
+.idea/
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+
+# Android
+app/build/
+
+# Kotlin
+*.class
+
+# Keystore
+*.jks
+*.keystore
+
+# Generated
+app/release/
+app/debug/

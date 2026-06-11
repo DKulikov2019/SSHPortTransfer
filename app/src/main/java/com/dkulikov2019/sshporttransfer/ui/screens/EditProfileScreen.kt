@@ -14,6 +14,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -27,6 +28,12 @@ fun EditProfileScreen(
     viewModel: EditProfileViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(state.isSaved) {
+        if (state.isSaved) {
+            onNavigateBack()
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -108,11 +115,11 @@ fun EditProfileScreen(
                     onCheckedChange = viewModel::onAutoReconnectChanged
                 )
             }
+            state.validationMessage?.let { message ->
+                Text(text = message)
+            }
             Button(
-                onClick = {
-                    viewModel.saveProfile()
-                    onNavigateBack()
-                },
+                onClick = viewModel::saveProfile,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Сохранить")

@@ -16,7 +16,7 @@ class TunnelNotificationFactory(
     fun createChannel() {
         val channel = NotificationChannel(
             CHANNEL_ID,
-            "SSH tunnel",
+            context.getString(R.string.notification_channel_name),
             NotificationManager.IMPORTANCE_LOW
         )
         val notificationManager = context.getSystemService(NotificationManager::class.java)
@@ -33,8 +33,8 @@ class TunnelNotificationFactory(
         )
 
         return NotificationCompat.Builder(context, CHANNEL_ID)
-            .setContentTitle("SSH tunnel active")
-            .setContentText("Foreground tunnel service is running")
+            .setContentTitle(context.getString(R.string.notification_title))
+            .setContentText(context.getString(R.string.notification_text))
             .setSmallIcon(android.R.drawable.stat_sys_upload_done)
             .setContentIntent(pendingIntent)
             .setOngoing(true)

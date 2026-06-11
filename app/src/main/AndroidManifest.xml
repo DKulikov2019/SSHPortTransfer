@@ -8,17 +8,16 @@
         android:name=".SSHPortTransferApp"
         android:allowBackup="true"
         android:icon="@android:drawable/stat_sys_upload_done"
-        android:label="SSHPortTransfer"
+        android:label="@string/app_name"
         android:roundIcon="@android:drawable/stat_sys_upload_done"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Material3.DayNight.NoActionBar">
+        android:theme="@style/Theme.SSHPortTransfer">
 
         <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

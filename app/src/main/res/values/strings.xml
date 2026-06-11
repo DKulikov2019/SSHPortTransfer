@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SSHPortTransfer</string>
+    <string name="notification_channel_name">SSH tunnel</string>
+    <string name="notification_title">SSH tunnel active</string>
+    <string name="notification_text">Foreground tunnel service is running</string>
+</resources>

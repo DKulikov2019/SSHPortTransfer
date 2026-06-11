@@ -12,5 +12,6 @@ data class EditProfileUiState(
     val remotePort: String = "",
     val keepAliveSeconds: String = "",
     val autoReconnect: Boolean = false,
-    val validationMessage: String? = null
+    val validationMessage: String? = null,
+    val isSaved: Boolean = false
 )

@@ -25,33 +25,57 @@ class EditProfileViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(EditProfileUiState())
     val uiState: StateFlow<EditProfileUiState> = _uiState.asStateFlow()
 
-    fun onNameChanged(value: String) = _uiState.update { it.copy(name = value) }
-    fun onSshHostChanged(value: String) = _uiState.update { it.copy(sshHost = value) }
-    fun onSshPortChanged(value: String) = _uiState.update { it.copy(sshPort = value) }
-    fun onUsernameChanged(value: String) = _uiState.update { it.copy(username = value) }
-    fun onPasswordChanged(value: String) = _uiState.update { it.copy(password = value) }
-    fun onLocalHostChanged(value: String) = _uiState.update { it.copy(localHost = value) }
-    fun onLocalPortChanged(value: String) = _uiState.update { it.copy(localPort = value) }
-    fun onRemoteHostChanged(value: String) = _uiState.update { it.copy(remoteHost = value) }
-    fun onRemotePortChanged(value: String) = _uiState.update { it.copy(remotePort = value) }
-    fun onKeepAliveChanged(value: String) = _uiState.update { it.copy(keepAliveSeconds = value) }
-    fun onAutoReconnectChanged(value: Boolean) = _uiState.update { it.copy(autoReconnect = value) }
+    fun onNameChanged(value: String) = _uiState.update { it.copy(name = value, validationMessage = null) }
+    fun onSshHostChanged(value: String) = _uiState.update { it.copy(sshHost = value, validationMessage = null) }
+    fun onSshPortChanged(value: String) = _uiState.update { it.copy(sshPort = value, validationMessage = null) }
+    fun onUsernameChanged(value: String) = _uiState.update { it.copy(username = value, validationMessage = null) }
+    fun onPasswordChanged(value: String) = _uiState.update { it.copy(password = value, validationMessage = null) }
+    fun onLocalHostChanged(value: String) = _uiState.update { it.copy(localHost = value, validationMessage = null) }
+    fun onLocalPortChanged(value: String) = _uiState.update { it.copy(localPort = value, validationMessage = null) }
+    fun onRemoteHostChanged(value: String) = _uiState.update { it.copy(remoteHost = value, validationMessage = null) }
+    fun onRemotePortChanged(value: String) = _uiState.update { it.copy(remotePort = value, validationMessage = null) }
+    fun onKeepAliveChanged(value: String) = _uiState.update { it.copy(keepAliveSeconds = value, validationMessage = null) }
+    fun onAutoReconnectChanged(value: Boolean) = _uiState.update { it.copy(autoReconnect = value, validationMessage = null) }
 
     fun saveProfile() {
         val state = _uiState.value
+        val sshPort = state.sshPort.toIntOrNull()
+        val localPort = state.localPort.toIntOrNull()
+        val remotePort = state.remotePort.toIntOrNull()
+        val keepAlive = state.keepAliveSeconds.toIntOrNull()
+
+        val validationMessage = when {
+            state.name.isBlank() -> "Profile name is required"
+            state.sshHost.isBlank() -> "SSH host is required"
+            sshPort == null || sshPort !in 1..65535 -> "SSH port must be between 1 and 65535"
+            state.username.isBlank() -> "Username is required"
+            state.password.isBlank() -> "Password is required"
+            state.localHost.isBlank() -> "Local host is required"
+            localPort == null || localPort !in 1..65535 -> "Local port must be between 1 and 65535"
+            state.remoteHost.isBlank() -> "Remote host is required"
+            remotePort == null || remotePort !in 1..65535 -> "Remote port must be between 1 and 65535"
+            keepAlive == null || keepAlive < 0 -> "Keep alive must be 0 or greater"
+            else -> null
+        }
+
+        if (validationMessage != null) {
+            _uiState.update { it.copy(validationMessage = validationMessage, isSaved = false) }
+            return
+        }
+
         val profileId = UUID.randomUUID().toString()
         val profile = ConnectionProfile(
             id = profileId,
             name = state.name,
             sshHost = state.sshHost,
-            sshPort = state.sshPort.toIntOrNull() ?: 0,
+            sshPort = sshPort!!,
             username = state.username,
             authType = AuthType.PASSWORD,
             localHost = state.localHost,
-            localPort = state.localPort.toIntOrNull() ?: 0,
+            localPort = localPort!!,
             remoteHost = state.remoteHost,
-            remotePort = state.remotePort.toIntOrNull() ?: 0,
-            keepAliveSeconds = state.keepAliveSeconds.toIntOrNull() ?: 0,
+            remotePort = remotePort!!,
+            keepAliveSeconds = keepAlive!!,
             autoReconnect = state.autoReconnect
         )
 
@@ -61,6 +85,7 @@ class EditProfileViewModel @Inject constructor(
                 profileId = profileId,
                 credentials = Credentials.Password(state.password)
             )
+            _uiState.update { it.copy(validationMessage = null, isSaved = true) }
         }
     }
 }

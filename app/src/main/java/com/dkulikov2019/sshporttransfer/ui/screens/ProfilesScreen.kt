@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.dkulikov2019.sshporttransfer.presentation.profile.ProfilesViewModel
+import com.dkulikov2019.sshporttransfer.ui.components.TunnelStatusCard
 
 @Composable
 fun ProfilesScreen(
@@ -52,6 +53,9 @@ fun ProfilesScreen(
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
+                item {
+                    TunnelStatusCard(tunnelState = state.tunnelState)
+                }
                 item {
                     state.errorMessage?.let { message ->
                         Text(
@@ -109,6 +113,7 @@ private fun EmptyProfilesState(
         modifier = modifier.padding(24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        TunnelStatusCard(tunnelState = com.dkulikov2019.sshporttransfer.domain.model.TunnelState.Disconnected)
         Text(
             text = "Профили пока не созданы",
             style = MaterialTheme.typography.titleMedium

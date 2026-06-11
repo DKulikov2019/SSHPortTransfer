@@ -3,6 +3,7 @@ package com.dkulikov2019.sshporttransfer.di
 import android.content.Context
 import androidx.room.Room
 import com.dkulikov2019.sshporttransfer.data.local.db.AppDatabase
+import com.dkulikov2019.sshporttransfer.data.local.db.dao.KnownHostDao
 import com.dkulikov2019.sshporttransfer.data.local.db.dao.ProfileDao
 import com.dkulikov2019.sshporttransfer.data.repository.KnownHostsRepositoryImpl
 import com.dkulikov2019.sshporttransfer.data.repository.ProfileRepositoryImpl
@@ -47,5 +48,8 @@ abstract class AppModule {
 
         @Provides
         fun provideProfileDao(database: AppDatabase): ProfileDao = database.profileDao()
+
+        @Provides
+        fun provideKnownHostDao(database: AppDatabase): KnownHostDao = database.knownHostDao()
     }
 }

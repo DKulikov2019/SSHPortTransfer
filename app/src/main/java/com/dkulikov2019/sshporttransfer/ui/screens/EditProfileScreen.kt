@@ -37,7 +37,9 @@ fun EditProfileScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("Новый профиль") })
+            TopAppBar(
+                title = { Text("Новый профиль") }
+            )
         }
     ) { padding ->
         Column(

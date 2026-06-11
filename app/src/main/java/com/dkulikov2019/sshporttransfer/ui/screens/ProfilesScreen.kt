@@ -31,7 +31,9 @@ fun ProfilesScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("SSHPortTransfer") })
+            TopAppBar(
+                title = { Text("SSHPortTransfer") }
+            )
         }
     ) { padding ->
         if (state.profiles.isEmpty()) {

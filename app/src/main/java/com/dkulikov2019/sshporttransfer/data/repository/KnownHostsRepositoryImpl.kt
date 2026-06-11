@@ -1,24 +1,31 @@
 package com.dkulikov2019.sshporttransfer.data.repository
 
+import com.dkulikov2019.sshporttransfer.data.local.db.dao.KnownHostDao
+import com.dkulikov2019.sshporttransfer.data.local.db.entity.KnownHostEntity
 import com.dkulikov2019.sshporttransfer.domain.repository.KnownHostsRepository
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class KnownHostsRepositoryImpl @Inject constructor() : KnownHostsRepository {
-    private val trustedHosts = mutableMapOf<String, String>()
-
+class KnownHostsRepositoryImpl @Inject constructor(
+    private val knownHostDao: KnownHostDao
+) : KnownHostsRepository {
     override suspend fun getFingerprint(host: String, port: Int): String? {
-        return trustedHosts[key(host, port)]
+        return knownHostDao.getByHostAndPort(host, port)?.fingerprint
     }
 
     override suspend fun saveFingerprint(host: String, port: Int, fingerprint: String) {
-        trustedHosts[key(host, port)] = fingerprint
+        knownHostDao.insert(
+            KnownHostEntity(
+                hostPortKey = "$host:$port",
+                host = host,
+                port = port,
+                fingerprint = fingerprint
+            )
+        )
     }
 
     override suspend fun clearFingerprint(host: String, port: Int) {
-        trustedHosts.remove(key(host, port))
+        knownHostDao.deleteByHostAndPort(host, port)
     }
-
-    private fun key(host: String, port: Int) = "$host:$port"
 }

@@ -11,6 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import net.schmizz.sshj.SSHClient
 import net.schmizz.sshj.connection.channel.direct.LocalPortForwarder
+import net.schmizz.sshj.connection.channel.direct.Parameters
 
 @Singleton
 class SshTunnelManager @Inject constructor(
@@ -36,7 +37,7 @@ class SshTunnelManager @Inject constructor(
             when (credentials) {
                 is Credentials.Password -> client.authPassword(profile.username, credentials.value)
                 is Credentials.PrivateKey -> {
-                    val keyProvider = client.loadKeys(credentials.privateKeyPath, credentials.passphrase)
+                    val keyProvider = client.loadKeys(credentials.keyAlias, credentials.passphrase)
                     client.authPublickey(profile.username, keyProvider)
                 }
             }
@@ -46,7 +47,7 @@ class SshTunnelManager @Inject constructor(
                 bind(InetSocketAddress(profile.localHost, profile.localPort))
             }
 
-            val parameters = LocalPortForwarder.Parameters(
+            val parameters = Parameters(
                 profile.localHost,
                 profile.localPort,
                 profile.remoteHost,

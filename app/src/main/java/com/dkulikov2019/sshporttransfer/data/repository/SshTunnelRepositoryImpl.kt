@@ -24,13 +24,13 @@ class SshTunnelRepositoryImpl @Inject constructor(
 
     override fun observeState(): StateFlow<TunnelState> = state.asStateFlow()
 
-    override suspend fun connect(profile: ConnectionProfile) {
+    override suspend fun connect(profile: ConnectionProfile, credentials: Credentials?) {
         state.value = TunnelState.Connecting
-        val credentials = secureCredentialsStore.getCredentials(profile.id)
+        val resolvedCredentials = credentials ?: secureCredentialsStore.getCredentials(profile.id)
             ?: throw IllegalStateException("Credentials not found for profile ${profile.name}")
 
         runCatching {
-            sshTunnelManager.connect(profile, credentials)
+            sshTunnelManager.connect(profile, resolvedCredentials)
         }.onSuccess {
             state.value = TunnelState.Connected(
                 localHost = profile.localHost,

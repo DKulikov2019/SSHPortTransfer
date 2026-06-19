@@ -13,6 +13,11 @@ class HostKeyVerifierImpl @Inject constructor(
     private val knownHostsRepository: KnownHostsRepository
 ) : HostKeyVerifier {
 
+    override fun findExistingAlgorithms(hostname: String, port: Int): MutableList<String> {
+        // This app stores only host fingerprints, so no pre-known host key algorithms are tracked.
+        return mutableListOf()
+    }
+
     override fun verify(hostname: String?, port: Int, key: PublicKey?): Boolean {
         if (hostname == null || key == null) return false
         val fingerprint = key.encoded.sha256()

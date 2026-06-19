@@ -1,23 +1,33 @@
+# IntelliJ / Android Studio
 *.iml
-.gradle/
-local.properties
 .idea/
+
+# macOS
 .DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
 
-# Android
-app/build/
-
-# Kotlin
+# Gradle / Kotlin build output
+.gradle/
+.kotlin/
+build/
+**/build/
 *.class
 
-# Keystore
+# Android build artifacts and intermediates
+captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+*.aab
+
+# Local machine config
+local.properties
+
+# Signing keys and local signing config
 *.jks
 *.keystore
+*.p12
+keystore.properties
 
-# Generated
-app/release/
-app/debug/
+# Optional local env files
+.env
+.env.*

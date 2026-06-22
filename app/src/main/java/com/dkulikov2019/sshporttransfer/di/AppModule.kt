@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.dkulikov2019.sshporttransfer.data.local.db.AppDatabase
 import com.dkulikov2019.sshporttransfer.data.local.db.dao.KnownHostDao
 import com.dkulikov2019.sshporttransfer.data.local.db.dao.ProfileDao
+import com.dkulikov2019.sshporttransfer.data.preferences.ThemePreferencesRepositoryImpl
 import com.dkulikov2019.sshporttransfer.data.repository.KnownHostsRepositoryImpl
 import com.dkulikov2019.sshporttransfer.data.repository.ProfileRepositoryImpl
 import com.dkulikov2019.sshporttransfer.data.repository.SshTunnelRepositoryImpl
@@ -15,6 +16,7 @@ import com.dkulikov2019.sshporttransfer.domain.repository.KnownHostsRepository
 import com.dkulikov2019.sshporttransfer.domain.repository.ProfileRepository
 import com.dkulikov2019.sshporttransfer.domain.repository.SecureCredentialsStore
 import com.dkulikov2019.sshporttransfer.domain.repository.SshTunnelRepository
+import com.dkulikov2019.sshporttransfer.domain.repository.ThemePreferencesRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -37,6 +39,9 @@ abstract class AppModule {
 
     @Binds
     abstract fun bindSshTunnelRepository(impl: SshTunnelRepositoryImpl): SshTunnelRepository
+
+    @Binds
+    abstract fun bindThemePreferencesRepository(impl: ThemePreferencesRepositoryImpl): ThemePreferencesRepository
 
     companion object {
         @Provides

@@ -1,6 +1,7 @@
 package com.dkulikov2019.sshporttransfer.presentation.profile
 
 data class EditProfileUiState(
+    val profileId: String? = null,
     val name: String = "",
     val sshHost: String = "",
     val sshPort: String = "",
@@ -14,4 +15,7 @@ data class EditProfileUiState(
     val autoReconnect: Boolean = false,
     val validationMessage: String? = null,
     val isSaved: Boolean = false
-)
+) {
+    val isEditing: Boolean
+        get() = profileId != null
+}

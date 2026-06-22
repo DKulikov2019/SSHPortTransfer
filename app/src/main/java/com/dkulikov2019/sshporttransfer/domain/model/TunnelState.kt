@@ -2,7 +2,7 @@ package com.dkulikov2019.sshporttransfer.domain.model
 
 sealed interface TunnelState {
     data object Disconnected : TunnelState
-    data object Connecting : TunnelState
+    data class Connecting(val message: String) : TunnelState
     data class Connected(
         val localHost: String,
         val localPort: Int,

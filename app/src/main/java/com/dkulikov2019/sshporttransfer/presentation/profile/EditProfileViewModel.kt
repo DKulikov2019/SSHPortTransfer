@@ -1,12 +1,15 @@
 package com.dkulikov2019.sshporttransfer.presentation.profile
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dkulikov2019.sshporttransfer.domain.model.AuthType
 import com.dkulikov2019.sshporttransfer.domain.model.ConnectionProfile
 import com.dkulikov2019.sshporttransfer.domain.model.Credentials
 import com.dkulikov2019.sshporttransfer.domain.repository.SecureCredentialsStore
+import com.dkulikov2019.sshporttransfer.domain.usecase.GetProfileByIdUseCase
 import com.dkulikov2019.sshporttransfer.domain.usecase.SaveProfileUseCase
+import com.dkulikov2019.sshporttransfer.presentation.navigation.Destinations
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.UUID
 import javax.inject.Inject
@@ -18,12 +21,21 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class EditProfileViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     private val saveProfileUseCase: SaveProfileUseCase,
+    private val getProfileByIdUseCase: GetProfileByIdUseCase,
     private val secureCredentialsStore: SecureCredentialsStore
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(EditProfileUiState())
     val uiState: StateFlow<EditProfileUiState> = _uiState.asStateFlow()
+
+    init {
+        val profileId = savedStateHandle.get<String?>(Destinations.EditProfileArg)
+        if (!profileId.isNullOrBlank()) {
+            loadProfile(profileId)
+        }
+    }
 
     fun onNameChanged(value: String) = _uiState.update { it.copy(name = value, validationMessage = null) }
     fun onSshHostChanged(value: String) = _uiState.update { it.copy(sshHost = value, validationMessage = null) }
@@ -63,7 +75,7 @@ class EditProfileViewModel @Inject constructor(
             return
         }
 
-        val profileId = UUID.randomUUID().toString()
+        val profileId = state.profileId ?: UUID.randomUUID().toString()
         val profile = ConnectionProfile(
             id = profileId,
             name = state.name,
@@ -86,6 +98,38 @@ class EditProfileViewModel @Inject constructor(
                 credentials = Credentials.Password(state.password)
             )
             _uiState.update { it.copy(validationMessage = null, isSaved = true) }
+        }
+    }
+
+    private fun loadProfile(profileId: String) {
+        viewModelScope.launch {
+            val profile = getProfileByIdUseCase(profileId)
+            if (profile == null) {
+                _uiState.update {
+                    it.copy(validationMessage = "Профиль не найден")
+                }
+                return@launch
+            }
+
+            val credentials = secureCredentialsStore.getCredentials(profileId)
+            _uiState.update {
+                it.copy(
+                    profileId = profile.id,
+                    name = profile.name,
+                    sshHost = profile.sshHost,
+                    sshPort = profile.sshPort.toString(),
+                    username = profile.username,
+                    password = (credentials as? Credentials.Password)?.value.orEmpty(),
+                    localHost = profile.localHost,
+                    localPort = profile.localPort.toString(),
+                    remoteHost = profile.remoteHost,
+                    remotePort = profile.remotePort.toString(),
+                    keepAliveSeconds = profile.keepAliveSeconds.toString(),
+                    autoReconnect = profile.autoReconnect,
+                    validationMessage = null,
+                    isSaved = false
+                )
+            }
         }
     }
 }

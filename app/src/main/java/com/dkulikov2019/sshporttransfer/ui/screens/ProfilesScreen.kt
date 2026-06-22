@@ -4,22 +4,35 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.dkulikov2019.sshporttransfer.presentation.profile.ProfilesViewModel
@@ -29,15 +42,15 @@ import com.dkulikov2019.sshporttransfer.ui.components.TunnelStatusCard
 @Composable
 fun ProfilesScreen(
     onAddProfile: () -> Unit,
+    onEditProfile: (String) -> Unit,
     viewModel: ProfilesViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsState()
+    var profilePendingDelete by remember { mutableStateOf<String?>(null) }
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("SSHPortTransfer") }
-            )
+            TopAppBar(title = { Text("SSHPortTransfer") })
         }
     ) { padding ->
         if (state.profiles.isEmpty()) {
@@ -56,7 +69,10 @@ fun ProfilesScreen(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 item {
-                    TunnelStatusCard(tunnelState = state.tunnelState)
+                    TunnelStatusCard(
+                        tunnelState = state.tunnelState,
+                        diagnostics = state.connectionDiagnostics
+                    )
                 }
                 item {
                     state.errorMessage?.let { message ->
@@ -79,14 +95,39 @@ fun ProfilesScreen(
                                 style = MaterialTheme.typography.bodySmall,
                                 modifier = Modifier.padding(top = 4.dp, bottom = 12.dp)
                             )
-                            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
                                 if (isActive) {
                                     Button(onClick = viewModel::onDisconnectClicked) {
-                                        Text("Disconnect")
+                                        Text("Отключить")
                                     }
                                 } else {
                                     Button(onClick = { viewModel.onConnectClicked(profile.id) }) {
-                                        Text("Connect")
+                                        Text("Подключить")
+                                    }
+                                }
+                                Spacer(modifier = Modifier.weight(1f))
+                                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                                    IconButton(
+                                        onClick = { onEditProfile(profile.id) },
+                                        modifier = Modifier.size(36.dp)
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Edit,
+                                            contentDescription = "Редактировать профиль"
+                                        )
+                                    }
+                                    IconButton(
+                                        onClick = { profilePendingDelete = profile.id },
+                                        modifier = Modifier.size(36.dp)
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Delete,
+                                            contentDescription = "Удалить профиль",
+                                            tint = MaterialTheme.colorScheme.error
+                                        )
                                     }
                                 }
                             }
@@ -98,10 +139,34 @@ fun ProfilesScreen(
                         onClick = onAddProfile,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("Добавить ещё профиль")
+                        Text("Добавить профиль")
                     }
                 }
             }
+        }
+
+        val pendingProfile = state.profiles.firstOrNull { it.id == profilePendingDelete }
+        if (pendingProfile != null) {
+            AlertDialog(
+                onDismissRequest = { profilePendingDelete = null },
+                title = { Text("Удалить профиль?") },
+                text = { Text("Профиль '${pendingProfile.name}' будет удалён без возможности восстановления.") },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            viewModel.onDeleteClicked(pendingProfile.id)
+                            profilePendingDelete = null
+                        }
+                    ) {
+                        Text("Удалить")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { profilePendingDelete = null }) {
+                        Text("Отмена")
+                    }
+                }
+            )
         }
     }
 }

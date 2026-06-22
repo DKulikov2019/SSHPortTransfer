@@ -6,5 +6,37 @@
     <string name="notification_text">Foreground tunnel service is running</string>
     <string name="action_connect">Connect</string>
     <string name="action_disconnect">Disconnect</string>
-    <string name="action_add_profile">Добавить ещё профиль</string>
+    <string name="action_add_profile">Add another profile</string>
+
+    <string name="new_profile_title">New profile</string>
+    <string name="edit_profile_title">Edit profile</string>
+    <string name="save_profile">Save</string>
+    <string name="save_profile_changes">Save changes</string>
+
+    <string name="profile_name_label">Profile name</string>
+    <string name="ssh_host_label">SSH host</string>
+    <string name="ssh_port_label">SSH port</string>
+    <string name="username_label">Username</string>
+    <string name="password_label">Password</string>
+    <string name="local_host_label">Local host</string>
+    <string name="local_port_label">Local port</string>
+    <string name="remote_host_label">Remote host</string>
+    <string name="remote_port_label">Remote port</string>
+    <string name="keep_alive_label">Keep-alive interval (sec)</string>
+    <string name="auto_reconnect_label">Auto reconnect</string>
+
+    <string name="help_dialog_ok">Ok</string>
+    <string name="help_icon_content_description">Show help for: %1$s</string>
+
+    <string name="help_profile_name">A custom name that helps you quickly find and distinguish this connection profile.</string>
+    <string name="help_ssh_host">Domain name or IP address of the SSH server. Example: vpn.example.com.</string>
+    <string name="help_ssh_port">SSH server port. Usually 22 unless your server is configured differently.</string>
+    <string name="help_username">SSH account username. Example: root or deploy.</string>
+    <string name="help_password">Password for SSH authentication. Stored in the app secure storage.</string>
+    <string name="help_local_host">Device interface address where the local port is opened. 127.0.0.1 is recommended for local-only access.</string>
+    <string name="help_local_port">Port on your device that forwards traffic through the SSH tunnel. Choose a free port such as 8080 or 15432.</string>
+    <string name="help_remote_host">Target service address reachable from the SSH server. Often localhost or an internal network host.</string>
+    <string name="help_remote_port">Target service port on the remote side. Example: 5432 for PostgreSQL or 3306 for MySQL.</string>
+    <string name="help_keep_alive">Keep-alive packet interval in seconds to keep the SSH session active. A common range is 15 to 60 seconds.</string>
+    <string name="help_auto_reconnect">If the connection drops, the app will try to restore the tunnel automatically.</string>
 </resources>

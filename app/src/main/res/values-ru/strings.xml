@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SSHPortTransfer</string>
+    <string name="notification_channel_name">SSH туннель</string>
+    <string name="notification_title">SSH туннель активен</string>
+    <string name="notification_text">Фоновый сервис туннеля запущен</string>
+    <string name="action_connect">Подключить</string>
+    <string name="action_disconnect">Отключить</string>
+    <string name="action_add_profile">Добавить ещё профиль</string>
+
+    <string name="new_profile_title">Новый профиль</string>
+    <string name="edit_profile_title">Редактирование профиля</string>
+    <string name="save_profile">Сохранить</string>
+    <string name="save_profile_changes">Сохранить изменения</string>
+
+    <string name="profile_name_label">Название профиля</string>
+    <string name="ssh_host_label">SSH-хост</string>
+    <string name="ssh_port_label">SSH-порт</string>
+    <string name="username_label">Имя пользователя</string>
+    <string name="password_label">Пароль</string>
+    <string name="local_host_label">Локальный хост</string>
+    <string name="local_port_label">Локальный порт</string>
+    <string name="remote_host_label">Удаленный хост</string>
+    <string name="remote_port_label">Удаленный порт</string>
+    <string name="keep_alive_label">Интервал keep-alive (сек)</string>
+    <string name="auto_reconnect_label">Автоматическое переподключение</string>
+
+    <string name="help_dialog_ok">Ok</string>
+    <string name="help_icon_content_description">Показать пояснение для: %1$s</string>
+
+    <string name="help_profile_name">Произвольное имя для удобного поиска и различия подключений. Рекомендуется короткое и понятное название.</string>
+    <string name="help_ssh_host">Домен или IP-адрес SSH-сервера, к которому выполняется подключение. Пример: vpn.example.com.</string>
+    <string name="help_ssh_port">Порт SSH-сервера. Обычно это 22, если сервер не настроен иначе.</string>
+    <string name="help_username">Логин пользователя на SSH-сервере. Пример: root или deploy.</string>
+    <string name="help_password">Пароль для SSH-аутентификации. Хранится в защищенном хранилище приложения.</string>
+    <string name="help_local_host">Адрес интерфейса на устройстве, где будет открыт локальный порт. Рекомендуется 127.0.0.1 для доступа только с устройства.</string>
+    <string name="help_local_port">Порт на вашем устройстве, через который трафик пойдет в туннель. Выберите свободный порт, например 8080 или 15432.</string>
+    <string name="help_remote_host">Адрес сервиса на стороне SSH-сервера, к которому нужно прокинуть соединение. Часто это localhost или внутренний адрес сети.</string>
+    <string name="help_remote_port">Порт удаленного сервиса на стороне SSH-сервера. Пример: 5432 для PostgreSQL или 3306 для MySQL.</string>
+    <string name="help_keep_alive">Интервал отправки keep-alive пакетов в секундах для поддержания SSH-сессии. Рекомендуется от 15 до 60 секунд.</string>
+    <string name="help_auto_reconnect">При обрыве соединения приложение будет пытаться восстановить туннель автоматически. Включайте для нестабильной сети.</string>
+</resources>
+
